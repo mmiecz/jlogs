@@ -1,9 +1,7 @@
-use serde::de::Error;
-use serde::{Deserialize, Deserializer};
+use serde::Deserialize;
 use std::collections::HashMap;
 use std::fs::File;
 use std::io::{BufRead, BufReader, Write};
-use tabwriter;
 use thiserror::Error;
 
 #[derive(Error, Debug)]
@@ -38,7 +36,7 @@ impl LogsStats {
         let stats_entry = self
             .log_type_stats
             .entry(log_type.to_owned())
-            .or_insert(LogStats::default());
+            .or_insert_with(LogStats::default);
         stats_entry.count += 1;
         stats_entry.bytes += bytes_count;
     }
@@ -64,7 +62,6 @@ fn pretty_print_stats<W: std::io::Write>(
     Ok(())
 }
 
-
 fn main() -> Result<(), AppError> {
     let filename = std::env::args().nth(1).ok_or_else(AppError::NoArg)?;
     let file = File::open(filename)?;
@@ -76,7 +73,7 @@ fn main() -> Result<(), AppError> {
         let message_len_bytes = message.len();
         match serde_json::from_str::<Log>(&message) {
             Ok(log) => {
-                log_stats.update_log_stats( log.log_type, message_len_bytes);
+                log_stats.update_log_stats(log.log_type, message_len_bytes);
             }
             Err(e) => {
                 eprintln!("Error while processing log: {} Reason: {}", message, e);
@@ -85,5 +82,4 @@ fn main() -> Result<(), AppError> {
     }
     pretty_print_stats(std::io::stdout(), &log_stats)?;
     Ok(())
-
 }
