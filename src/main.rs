@@ -11,7 +11,7 @@ enum AppError {
     #[error("Deserialization error: {0}")]
     JSonDeserialization(#[from] serde_json::Error),
     #[error("No filename given")]
-    NoArg(),
+    NoInputFile(),
 }
 
 #[derive(Copy, Clone, Debug, Default)]
@@ -63,7 +63,7 @@ fn pretty_print_stats<W: std::io::Write>(
 }
 
 fn main() -> Result<(), AppError> {
-    let filename = std::env::args().nth(1).ok_or_else(AppError::NoArg)?;
+    let filename = std::env::args().nth(1).ok_or_else(AppError::NoInputFile)?;
     let file = File::open(filename)?;
     let lines = BufReader::new(file).lines();
 
