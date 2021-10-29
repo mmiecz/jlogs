@@ -1,11 +1,11 @@
 # jlogs
 
 Simple tool for summarizing logs.
-Counting bytes and occurences of json logs tagged with "type" 
-Supports single json object per line, in file.
+Counting bytes and occurences of json logs tagged with "type".
+Supports files with single json object per line.
 
 It doesn't support other log inside a log, e.g.:
-`{"type": "A", "value": { "type": "B", "value": 5}}` will still count as one occurence of log type A, without processing the log of type B
+`{"type": "A", "value": { "type": "B", "value": 5}}` will still count as one occurence of log type A, without processing the log of type B.
 
 
 ## How to run:
